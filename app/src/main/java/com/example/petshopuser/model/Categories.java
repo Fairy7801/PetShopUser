@@ -1,27 +1,30 @@
 package com.example.petshopuser.model;
 
 public class Categories {
-    private String idCategories;
+    private String id;
     private String name;
-    private String description;
+    private String moTa;
     private String image;
-    public Categories(){
-
+    private Boolean trangthai;
+    private String token;
+    public Categories (){
     }
 
-    public Categories(String idCategories, String name, String description, String image) {
-        this.idCategories = idCategories;
+    public Categories(String id, String name, String moTa, String image, Boolean trangthai, String token) {
+        this.id = id;
         this.name = name;
-        this.description = description;
+        this.moTa = moTa;
         this.image = image;
+        this.trangthai = trangthai;
+        this.token = token;
     }
 
-    public String getIdCategories() {
-        return idCategories;
+    public String getId() {
+        return id;
     }
 
-    public void setIdCategories(String idCategories) {
-        this.idCategories = idCategories;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -32,12 +35,12 @@ public class Categories {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMoTa() {
+        return moTa;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
     }
 
     public String getImage() {
@@ -46,5 +49,26 @@ public class Categories {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Boolean getTrangthai() {
+        return trangthai;
+    }
+
+    public void setTrangthai(Boolean trangthai) {
+        this.trangthai = trangthai;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

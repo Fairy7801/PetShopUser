@@ -1,17 +1,17 @@
 package com.example.petshopuser.Notification;
 
-public class DataInvoice {
+public class DataHoaDon {
     private String user;
     private int icon;
     private String body;
     private String title;
     private String sented;
     String detailInvoice;
-    public DataInvoice(){
+    public DataHoaDon(){
 
     }
 
-    public DataInvoice(String user, int icon, String body, String title, String sented, String detailInvoice) {
+    public DataHoaDon(String user, int icon, String body, String title, String sented, String detailInvoice) {
         this.user = user;
         this.icon = icon;
         this.body = body;

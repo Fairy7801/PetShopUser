@@ -24,7 +24,7 @@ public class DaoProducts {
 
     public DaoProducts(Context context) {
         this.context = context;
-        this.mRef = FirebaseDatabase.getInstance().getReference("Food");
+        this.mRef = FirebaseDatabase.getInstance().getReference("Product");
     }
     public void getAll(final ProductsCallBack callback) {
         final ArrayList<Products> dataloai = new ArrayList<>();
@@ -66,13 +66,13 @@ public class DaoProducts {
             }
         });
     }
-    public boolean update(final Products item){
+    public boolean update(final Products item) {
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    if(dataSnapshot.child("idfood").getValue(String.class).equalsIgnoreCase(item.getIdProducts())){
-                        key=dataSnapshot.getKey();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot.child("idP").getValue(String.class).equalsIgnoreCase(item.getIdP())) {
+                        key = dataSnapshot.getKey();
                         mRef.child(key).setValue(item);
                         Toast.makeText(context, "Update Thành Công", Toast.LENGTH_SHORT).show();
                     }
@@ -81,10 +81,8 @@ public class DaoProducts {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
         return true;
     }
     public void delete(final String matheloai){
