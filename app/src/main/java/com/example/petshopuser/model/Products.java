@@ -1,49 +1,49 @@
 package com.example.petshopuser.model;
 
 public class Products {
-    private String idProducts;
-    private String name;
+    private String nameP;
+    private String idP;
     private double price;
-    private int quatity;
+    private int quantity;
     private String image;
     private String address;
     private String description;
-    private String status;
-    private String idCategories;
+    private String id;
     private String idStore;
     private String tokenStore;
+    private String status;
     public Products(){
 
     }
 
-    public Products(String idProducts, String name, double price, int quatity, String image, String address, String description, String status, String idCategories, String idStore, String tokenStore) {
-        this.idProducts = idProducts;
-        this.name = name;
+    public Products(String nameP, String idP, double price, int quantity, String image, String address, String description, String id, String idStore, String tokenStore, String status) {
+        this.nameP = nameP;
+        this.idP = idP;
         this.price = price;
-        this.quatity = quatity;
+        this.quantity = quantity;
         this.image = image;
         this.address = address;
         this.description = description;
-        this.status = status;
-        this.idCategories = idCategories;
+        this.id = id;
         this.idStore = idStore;
         this.tokenStore = tokenStore;
+        this.status = status;
     }
 
-    public String getIdProducts() {
-        return idProducts;
+    public String getNameP() {
+        return nameP;
     }
 
-    public void setIdProducts(String idProducts) {
-        this.idProducts = idProducts;
+    public void setNameP(String nameP) {
+        this.nameP = nameP;
     }
 
-    public String getName() {
-        return name;
+    public String getIdP() {
+        return idP;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIdP(String idP) {
+        this.idP = idP;
     }
 
     public double getPrice() {
@@ -54,12 +54,12 @@ public class Products {
         this.price = price;
     }
 
-    public int getQuatity() {
-        return quatity;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setQuatity(int quatity) {
-        this.quatity = quatity;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getImage() {
@@ -86,20 +86,12 @@ public class Products {
         this.description = description;
     }
 
-    public String getStatus() {
-        return status;
+    public String getId() {
+        return id;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getIdCategories() {
-        return idCategories;
-    }
-
-    public void setIdCategories(String idCategories) {
-        this.idCategories = idCategories;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getIdStore() {
@@ -116,5 +108,31 @@ public class Products {
 
     public void setTokenStore(String tokenStore) {
         this.tokenStore = tokenStore;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Products{" +
+                "nameP='" + nameP + '\'' +
+                ", idP='" + idP + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", image='" + image + '\'' +
+                ", address='" + address + '\'' +
+                ", description='" + description + '\'' +
+                ", id='" + id + '\'' +
+                ", idStore='" + idStore + '\'' +
+                ", tokenStore='" + tokenStore + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

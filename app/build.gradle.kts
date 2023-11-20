@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.example.petshopuser"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.petshopuser"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -27,9 +27,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
 dependencies {
+    val nav_version = "2.5.3"
 
     implementation("androidx.appcompat:appcompat:1.3.0")
     implementation("com.google.android.material:material:1.10.0")
@@ -45,7 +49,8 @@ dependencies {
     implementation("com.android.support:preference-v7:28.0.0")
 
 
-    implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
+//    implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
+    implementation(platform("com.google.firebase:firebase-bom:27.1.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation ("com.google.firebase:firebase-auth")
     implementation ("com.google.firebase:firebase-firestore:23.0.0")
@@ -59,7 +64,6 @@ dependencies {
     implementation  ("com.etebarian:meow-bottom-navigation:1.3.1")
 
     //Image slider
-    implementation  ("com.github.smarteist:autoimageslider:1.4.0")
     implementation  ("com.github.smarteist:autoimageslider:1.4.0")
 
     //Glide
@@ -92,5 +96,9 @@ dependencies {
     implementation  ("com.airbnb.android:lottie:3.4.1")
 
     implementation  ("it.xabaras.android:recyclerview-swipedecorator:1.2.3")
+
+    // Java language implementation
+    implementation("androidx.navigation:navigation-fragment:$nav_version")
+    implementation("androidx.navigation:navigation-ui:$nav_version")
 
 }

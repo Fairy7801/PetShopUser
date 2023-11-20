@@ -1,10 +1,10 @@
 package com.example.petshopuser.callback;
 
-import com.example.petshopuser.model.DetailInvoice;
+import com.example.petshopuser.model.HDCT;
 
 import java.util.ArrayList;
 
 public interface HDCTCallBack {
-    void onSuccess(ArrayList<DetailInvoice> lists);
+    void onSuccess(ArrayList<HDCT> lists);
     void onError(String message);
 }

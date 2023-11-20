@@ -6,7 +6,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.petshopuser.callback.HDCTCallBack;
-import com.example.petshopuser.model.DetailInvoice;
+import com.example.petshopuser.model.HDCT;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,14 +27,14 @@ public class DaoHDCT {
         this.mRef = FirebaseDatabase.getInstance().getReference("HDCT");
     }
     public void getAll(final HDCTCallBack callback) {
-        final ArrayList<DetailInvoice> dataloai = new ArrayList<>();
+        final ArrayList<HDCT> dataloai = new ArrayList<>();
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     dataloai.clear();
                     for (DataSnapshot data : snapshot.getChildren()){
-                        DetailInvoice categories = data.getValue(DetailInvoice.class);
+                        HDCT categories = data.getValue(HDCT.class);
                         dataloai.add(categories);
                     }
                     callback.onSuccess(dataloai);
@@ -46,7 +46,7 @@ public class DaoHDCT {
             }
         });
     }
-    public void insert(DetailInvoice item){
+    public void insert(HDCT item){
         // push cây theo mã tự tạo
         // string key lấy mã push
         key = mRef.push().getKey();
@@ -63,12 +63,12 @@ public class DaoHDCT {
             }
         });
     }
-    public boolean update(final DetailInvoice item){
+    public boolean update(final HDCT item){
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    if(dataSnapshot.child("idhct").getValue(String.class).equalsIgnoreCase(item.getIdInvoice())){
+                    if(dataSnapshot.child("idhct").getValue(String.class).equalsIgnoreCase(item.getIdHDCT())){
                         key=dataSnapshot.getKey();
                         mRef.child(key).setValue(item);
                         Toast.makeText(context, "Update Thành Công", Toast.LENGTH_SHORT).show();

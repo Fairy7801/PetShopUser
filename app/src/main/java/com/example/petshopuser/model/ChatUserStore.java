@@ -4,8 +4,8 @@ public class ChatUserStore {
     private String id;
     private User user;
     private Store store;
-    public ChatUserStore(){
 
+    public ChatUserStore() {
     }
 
     public ChatUserStore(String id, User user, Store store) {

@@ -66,44 +66,41 @@ public class DaoCategories {
             }
         });
     }
-    public boolean update(final Categories item){
+    public boolean update(final Categories item) {
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    if(dataSnapshot.child("matheloai").getValue(String.class).equalsIgnoreCase(item.getIdCategories())){
-                        key=dataSnapshot.getKey();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot.child("token").getValue(String.class).equalsIgnoreCase(item.getToken())) {
+                        key = dataSnapshot.getKey();
                         mRef.child(key).setValue(item);
-                        Toast.makeText(context, "Cập Nhật Thành Công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Update Thành Công", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
         return true;
     }
-    public void delete(final String matheloai){
+
+    public void delete(final String matheloai) {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    if(dataSnapshot.child("matheloai").getValue(String.class).equalsIgnoreCase(matheloai)){
-                        key=dataSnapshot.getKey();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot.child("token").getValue(String.class).equalsIgnoreCase(matheloai)) {
+                        key = dataSnapshot.getKey();
                         mRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(context, "Xoá Thành Công", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Delete Thành Công", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-
                             }
                         });
                     }
@@ -112,7 +109,6 @@ public class DaoCategories {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }

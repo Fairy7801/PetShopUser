@@ -6,9 +6,6 @@ public class Chat {
     private String message;
     private boolean isseen;
     private long time;
-    public Chat(){
-
-    }
 
     public Chat(String sender, String receiver, String message, boolean isseen, long time) {
         this.sender = sender;
@@ -16,6 +13,9 @@ public class Chat {
         this.message = message;
         this.isseen = isseen;
         this.time = time;
+    }
+
+    public Chat() {
     }
 
     public String getSender() {
