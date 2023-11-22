@@ -65,17 +65,14 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
 
 
 
-        holder.binding.cardViewRowCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ProductProfileActivity.class);
-                intent.putExtra("idfood",categories.getIdP());
-                intent.putExtra("matl",categories.getId());
-                intent.putExtra("tokenstore",categories.getTokenStore());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-            }
+        holder.binding.cardViewRowCategory.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ProductProfileActivity.class);
+            intent.putExtra("idfood",categories.getIdP());
+            intent.putExtra("matl",categories.getId());
+            intent.putExtra("tokenstore",categories.getTokenStore());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(intent);
         });
 
     }

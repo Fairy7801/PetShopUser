@@ -31,7 +31,6 @@ public class QuenMatKhau extends AppCompatActivity implements View.OnClickListen
     Button btnKhoiPhuc, btnQuayLai;
 
     FirebaseAuth firebaseAuth;
-    DatabaseReference mRef;
     DaoUser databaseUser;
     FirebaseUser firebaseUser;
     String mail;

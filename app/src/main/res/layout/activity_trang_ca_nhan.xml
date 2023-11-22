@@ -142,7 +142,7 @@
         <TextView
             android:id="@+id/txtGioHang"
             style="@style/viewParent.headerText.settingsTextIcon"
-            android:layout_marginStart="60dp"
+            android:drawableLeft="@drawable/icon_thanhtoan"
             android:text="Thanh toán" />
         <TextView
             android:id="@+id/map"

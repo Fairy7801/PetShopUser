@@ -86,17 +86,14 @@ public class TrangCaNhan extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                Toast.makeText(getApplicationContext(), "Đang phát triển, dự kiến khả dụng : CDIO 4", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        back.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         map.setOnClickListener(new View.OnClickListener() {
@@ -125,22 +122,12 @@ public class TrangCaNhan extends AppCompatActivity {
             }
         });
 
-        txtchangepassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iQuenPass = new Intent(getApplicationContext(), ThayDoiMatKhauActivity.class);
-                startActivity(iQuenPass);
-                finish();
-            }
+        txtchangepassword.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), ThayDoiMatKhauActivity.class));
+            finish();
         });
 
-        txteditprofile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iProfile = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(iProfile);
-            }
-        });
+        txteditprofile.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), EditProfile.class)));
 
         txtMesenger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,34 +136,19 @@ public class TrangCaNhan extends AppCompatActivity {
 //                startActivity(iMess);
             }
         });
-        txtDonHang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iDonHang = new Intent(getApplicationContext(), CartActivity.class);
-                startActivity(iDonHang);
-            }
+        txtDonHang.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), CartActivity.class)));
+        txtGioHang.setOnClickListener(v -> {
+            Intent iGioHang = new Intent(getApplicationContext(), ThanhToanActivity.class);
+            startActivity(iGioHang);
         });
-        txtGioHang.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iGioHang = new Intent(getApplicationContext(), ThanhToanActivity.class);
-                startActivity(iGioHang);
-            }
-        });
-        txtYeuThich.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iYeuThich = new Intent(getApplicationContext(), FavoriteActivity.class);
-                startActivity(iYeuThich);
-            }
+        txtYeuThich.setOnClickListener(v -> {
+            Intent iYeuThich = new Intent(getApplicationContext(), FavoriteActivity.class);
+            startActivity(iYeuThich);
         });
 
-        history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent iLichSu = new Intent(getApplicationContext(), HistoryActivity.class);
-                startActivity(iLichSu);
-            }
+        history.setOnClickListener(v -> {
+            Intent iLichSu = new Intent(getApplicationContext(), HistoryActivity.class);
+            startActivity(iLichSu);
         });
 
         txtlogout.setOnClickListener(new View.OnClickListener() {

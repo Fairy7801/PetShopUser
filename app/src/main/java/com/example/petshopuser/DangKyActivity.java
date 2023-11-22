@@ -84,7 +84,7 @@ public class DangKyActivity extends AppCompatActivity {
         final String email = binding.emailDangKyActivity.getText().toString().trim();
         final String password = binding.passwordDangKyActivity.getText().toString();
         final String confpass = binding.confPasswordDangKyActivity.getText().toString();
-        final String hoten = "0" + binding.fullNameDangKyActivity.getText().toString();
+        final String hoten = binding.fullNameDangKyActivity.getText().toString();
         final String phone = binding.edtPhoneDangKyActivity.getText().toString().trim();
         final String ngaysinh = binding.editTextDateDangKyActivity.getText().toString().trim();
         if (validateData(email, password, confpass, hoten, phone)) {

@@ -41,9 +41,9 @@ public class IntroActivity extends AppCompatActivity {
         View view = binding.getRoot();
 
         final List<ScreenItem> mList = new ArrayList<>();
-        mList.add(new ScreenItem("FindFood", "Ứng dụng tìm kiếm vào giao đồ ăn thông minh", R.drawable.a1));
-        mList.add(new ScreenItem("Gọi đâu có đó", "Tìm kiếm quán ăn, và đặt đồ ăn toàn quốc với tốc độ bàn thờ", R.drawable.a3));
-        mList.add(new ScreenItem("Ăn uống thả ga, không lo về giá", "Giá cả không là vấn đề", R.drawable.a2));
+        mList.add(new ScreenItem("PetShop", "Thế giới cho thú cưng", R.drawable.lg));
+        mList.add(new ScreenItem("Gọi đâu có đó", "Tìm kiếm dễ dàng - Giao hàng nhanh chóng", R.drawable.lg));
+        mList.add(new ScreenItem("Không lo về giá", "Giá cả hợp lý", R.drawable.lg));
 
         sliderAdapter = new SliderAdapter(this, mList);
         binding.screenViewpagerIntroActivity.setAdapter(sliderAdapter);
