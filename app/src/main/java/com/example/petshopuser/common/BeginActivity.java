@@ -167,8 +167,7 @@ public class BeginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(BeginActivity.this, IntroActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(BeginActivity.this, IntroActivity.class));
             finish();
         }, SPLASH_TIME);
     }
@@ -217,5 +216,4 @@ public class BeginActivity extends AppCompatActivity implements GoogleApiClient.
             fusedLocationClient.removeLocationUpdates(locationCallback);
         }
     }
-
 }

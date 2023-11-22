@@ -37,7 +37,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         adapter = new TabAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentGDThanhCong(), "Giao Dịch Thành Công");
-        adapter.addFragment(new FragmentGDThatBai(), "Giao Dịch Thất Bại");
+        adapter.addFragment(new FragmentGDThatBai(), "Giao Dịch Chờ Xác Nhận");
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 

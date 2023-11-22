@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.petshopuser.Notification.DataHoaDon;
 import com.example.petshopuser.Notification.SenderHoaDon;
+import com.example.petshopuser.View.User.TrangCaNhan;
 import com.example.petshopuser.adapter.CartAdapter;
 import com.example.petshopuser.callback.UserCallBack;
 import com.example.petshopuser.dao.DaoHDCT;
@@ -83,8 +84,7 @@ public class ThanhToanActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     String nameuser;
     String namestore;
-    int slm;
-    double gia;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +111,9 @@ public class ThanhToanActivity extends AppCompatActivity {
         titletoolbar.setTextSize(30);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         gson = new Gson();
-        hdctArrayList=new ArrayList<>();
-        orderArrayList=new ArrayList<>();
-        orderArrayList= getCartList();
+        hdctArrayList = new ArrayList<>();
+        orderArrayList = new ArrayList<>();
+        orderArrayList = getCartList();
         user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("HDCT");
         String keyhdct = databaseReference.push().getKey();
@@ -128,9 +128,8 @@ public class ThanhToanActivity extends AppCompatActivity {
 
 
         for (Order order: getCartList()){
-//            namestore =  order.getStore().getTokenStore();
             namestore = "Ppq6eE9AraU2LchCsOwk92JrRQM2";
-            nameuser=  order.getUser().getEmail();
+            nameuser =  order.getUser().getEmail();
         }
         HDCT hoadonchitiet = new HDCT(currentDateandTime,thoigian, keyhdct, keyhdct, false,user.getUid(),getCartList());
         hdctArrayList.add(hoadonchitiet);
@@ -150,7 +149,6 @@ public class ThanhToanActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     daoHDCT = new DaoHDCT(ThanhToanActivity.this);
                     for (HDCT hdct: hdctArrayList){
-
                         daoHDCT.insert(hdct);
                         sendNotifiaction(namestore,nameuser,"Xác nhận đơn hàng",user.getUid(),hdct.getIdHDCT());
                     }
@@ -174,9 +172,11 @@ public class ThanhToanActivity extends AppCompatActivity {
         daoUser.getAll(new UserCallBack() {
             @Override
             public void onSuccess(ArrayList<User> lists) {
-                for (int i = 0; i<lists.size();i++){
-                    if (lists.get(i).getToken().matches(user.getUid())){
+                for (int i = 0; i < lists.size(); i++) {
+                    String userToken = lists.get(i).getToken();
+                    if (userToken != null && userToken.matches(user.getUid())) {
                         txtaddress.setText(lists.get(i).getAddress());
+                        break;
                     }
                 }
             }
@@ -186,14 +186,11 @@ public class ThanhToanActivity extends AppCompatActivity {
 
             }
         });
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        toolbar.setNavigationOnClickListener(v -> {
 
-                startActivity(new Intent(ThanhToanActivity.this, MainActivity.class));
-                overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
-                finish();
-            }
+            startActivity(new Intent(ThanhToanActivity.this, TrangCaNhan.class));
+            overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+            finish();
         });
     }
     public ArrayList<Order> getCartList() {

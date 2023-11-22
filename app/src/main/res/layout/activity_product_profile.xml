@@ -271,7 +271,7 @@
                         >
                         <ImageView
                             android:layout_width="20dp"
-                            android:src="@drawable/icons8_subtract_26px_2"
+                            android:src="@drawable/icons8_subtract_50_1"
                             android:layout_height="20dp"/>
 
                     </LinearLayout>
@@ -296,7 +296,7 @@
                         >
                         <ImageView
                             android:layout_width="20dp"
-                            android:src="@drawable/icons8_plus_math_26px_1"
+                            android:src="@drawable/icons8_plus_24"
                             android:layout_height="20dp"/>
 
                     </LinearLayout>

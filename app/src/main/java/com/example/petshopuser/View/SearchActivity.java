@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.petshopuser.Helper.StringHelper;
 import com.example.petshopuser.Helper.ValidationHelper;
 import com.example.petshopuser.MainActivity;
 import com.example.petshopuser.adapter.FavoriteAdapter;
@@ -31,14 +32,11 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         productsArrayList = new ArrayList<>();
-
         daoProducts = new DaoProducts(SearchActivity.this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.VERTICAL, false);
-        binding.rcvSearchSearchActivity.setHasFixedSize(true);
-        binding.rcvSearchSearchActivity.setLayoutManager(layoutManager);
+        initView();
 
         binding.btnSearchSearchActivity.setOnClickListener(v -> {
-            String keyword = binding.edtKeyworkSearchActivity.getText().toString().toLowerCase(Locale.getDefault());
+            String keyword = StringHelper.convert(binding.edtKeyworkSearchActivity.getText().toString()).toLowerCase(Locale.getDefault());
             if (!ValidationHelper.isNotEmpty(keyword)) {
                 productsArrayList.clear();
                 updateAdapter();
@@ -53,13 +51,19 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    public void initView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.VERTICAL, false);
+        binding.rcvSearchSearchActivity.setHasFixedSize(true);
+        binding.rcvSearchSearchActivity.setLayoutManager(layoutManager);
+    }
+
     private void searchInDatabase(String keyword) {
         daoProducts.getAll(new ProductsCallBack() {
             @Override
             public void onSuccess(ArrayList<Products> lists) {
                 productsArrayList.clear();
                 for (Products product : lists) {
-                    if (product.getNameP().toLowerCase(Locale.getDefault()).contains(keyword)) {
+                    if (StringHelper.convert(product.getNameP()).toLowerCase(Locale.getDefault()).contains(keyword)) {
                         productsArrayList.add(product);
                     }
                 }
@@ -77,6 +81,7 @@ public class SearchActivity extends AppCompatActivity {
             favoriteAdapter = new FavoriteAdapter(productsArrayList, SearchActivity.this);
             binding.rcvSearchSearchActivity.setAdapter(favoriteAdapter);
         } else {
+
             favoriteAdapter.notifyDataSetChanged();
         }
     }

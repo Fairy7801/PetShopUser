@@ -146,12 +146,7 @@ public class XacNhanAdapter extends RecyclerView.Adapter<XacNhanAdapter.MyViewHo
                     }
                 });
 
-                quaylai.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myDialog.cancel();
-                    }
-                });
+                quaylai.setOnClickListener(v1 -> myDialog.cancel());
                 myDialog.show();
             }
         });

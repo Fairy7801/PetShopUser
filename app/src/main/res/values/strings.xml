@@ -2,7 +2,8 @@
     <string name="app_name">PetShopUser</string>
     <string name="facebookLink">Khi chọn Đăng Ký, bạn đồng ý với <a href="https://www.facebook.com/dthien232/">Điều khoản sử dụng </a> và <a href="https://www.instagram.com/bdthien232__/">Chính sách bảo mật </a> của FindFood</string>
     <string name="dangNhapThanhCong">Đăng nhập thành "CONG" :)</string>
-    <string name="taoBoi">Từ nhóm <b>AAHT</b></string>
+<!--    <string name="taoBoi">Từ nhóm <b>AAHT</b></string>-->
+    <string name="taoBoi">Từ: <b>Nguyễn Thị Phương</b></string>
     <string name="phienban">Version</string>
     <string name="dangtai">Loading...</string>
     <string name="taikhoan">Tài Khoản</string>

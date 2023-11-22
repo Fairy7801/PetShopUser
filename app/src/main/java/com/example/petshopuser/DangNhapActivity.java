@@ -88,7 +88,7 @@ public class DangNhapActivity extends AppCompatActivity implements GoogleApiClie
                 GoogleSignInAccount account = signInResult.getSignInAccount();
                 if (account != null) {
                     daoUser = new DaoUser(DangNhapActivity.this);
-                    User user = new User(account.getEmail(), null, account.getDisplayName(), null, null, null, null, null, firebaseAuth.getUid());
+                    User user = new User(account.getEmail(), null, account.getDisplayName(), null, null, null, null, null, account.getIdToken());
                     daoUser.insert(user);
 
                     String tokenID = account.getIdToken();

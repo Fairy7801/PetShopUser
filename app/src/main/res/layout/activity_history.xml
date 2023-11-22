@@ -21,7 +21,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:text="Lịch Sử Đơn Hàng"
-            android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
         <ImageView
@@ -42,8 +41,7 @@
         app:tabIndicatorColor="@color/colorPrimary"
         app:tabIndicatorHeight="4dp"
         app:tabMode="fixed"
-        app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
-        app:tabTextColor="@color/colorPrimary" />
+        app:tabTextAppearance="@style/MyTabLayoutTextAppearance" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
