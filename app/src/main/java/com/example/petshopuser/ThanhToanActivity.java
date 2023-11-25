@@ -27,6 +27,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.petshopuser.Helper.NumberFormatHelper;
 import com.example.petshopuser.Notification.DataHoaDon;
 import com.example.petshopuser.Notification.SenderHoaDon;
 import com.example.petshopuser.View.User.TrangCaNhan;
@@ -34,6 +35,7 @@ import com.example.petshopuser.adapter.CartAdapter;
 import com.example.petshopuser.callback.UserCallBack;
 import com.example.petshopuser.dao.DaoHDCT;
 import com.example.petshopuser.dao.DaoUser;
+import com.example.petshopuser.databinding.ActivityThanhToanBinding;
 import com.example.petshopuser.local.LocalStorage;
 import com.example.petshopuser.model.HDCT;
 import com.example.petshopuser.model.Order;
@@ -65,20 +67,14 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ThanhToanActivity extends AppCompatActivity {
-    RecyclerView rcvcart;
+    private ActivityThanhToanBinding binding;
     CartAdapter cartAdapter =null;
     ArrayList<HDCT> hdctArrayList;
     LocalStorage localstorage;
     Gson gson;
-    Toolbar toolbar;
-    TextView titletoolbar,txtaddress,txttientong;
-    RelativeLayout linearbackground;
     DaoHDCT daoHDCT;
     DaoUser daoUser;
-    Button btnthanhtoan;
     double tongtien=0;
-    LinearLayout linearLayout;
-    ScrollView scrollView;
     FirebaseUser user;
     ArrayList<Order> orderArrayList;
     private RequestQueue requestQueue;
@@ -90,26 +86,18 @@ public class ThanhToanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_thanh_toan);
-        rcvcart=findViewById(R.id.rcvcart);
+        binding = ActivityThanhToanBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         localstorage = new LocalStorage(this);
         getWindow().setStatusBarColor(ContextCompat.getColor(ThanhToanActivity.this, R.color.colorPrimary));
-        toolbar = findViewById(R.id.toolbar);
-        scrollView = findViewById(R.id.scrollView);
-        linearLayout = findViewById(R.id.linear1);
-        txtaddress = findViewById(R.id.txtaddress);
-        txttientong = findViewById(R.id.txttientong);
-        btnthanhtoan = findViewById(R.id.btn_insertcart);
-        linearbackground = findViewById(R.id.linearbackground);
-        titletoolbar = findViewById(R.id.toolbar_title);
+
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-        final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-        decimalFormat.applyPattern("#,###,###,###");
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbarThanhToanActivity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        titletoolbar.setText("Đơn Hàng");
-        titletoolbar.setTextSize(30);
+        binding.toolbarTitleThanhToanActivity.setText("Đơn Hàng");
+        binding.toolbarTitleThanhToanActivity.setTextSize(30);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         gson = new Gson();
         hdctArrayList = new ArrayList<>();
         orderArrayList = new ArrayList<>();
@@ -123,49 +111,34 @@ public class ThanhToanActivity extends AppCompatActivity {
         String thoigian = tg.format(new Date());
         hdctArrayList.clear();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
-
-
-
         for (Order order: getCartList()){
             namestore = "Ppq6eE9AraU2LchCsOwk92JrRQM2";
             nameuser =  order.getUser().getEmail();
         }
-        HDCT hoadonchitiet = new HDCT(currentDateandTime,thoigian, keyhdct, keyhdct, false,user.getUid(),getCartList());
-        hdctArrayList.add(hoadonchitiet);
-        Log.i("size", String.valueOf(hdctArrayList.size()));
+        cartAdapter = new CartAdapter(orderArrayList,ThanhToanActivity.this, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ThanhToanActivity.this,LinearLayoutManager.VERTICAL,false);
+        binding.rcvcartThanhToanActivity.setLayoutManager(linearLayoutManager);
+        binding.rcvcartThanhToanActivity.setAdapter(cartAdapter);
+
         if (getCartList().size() != 0){
-            cartAdapter = new CartAdapter(orderArrayList,ThanhToanActivity.this);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ThanhToanActivity.this,LinearLayoutManager.VERTICAL,false);
-            rcvcart.setLayoutManager(linearLayoutManager);
-            rcvcart.setAdapter(cartAdapter);
+            cartAdapter.notifyDataSetChanged();
             for (Order order: getCartList()){
-                tongtien = tongtien+order.getSoLuong() * order.getProducts().getPrice();
+                tongtien += order.getSoLuong() * order.getProducts().getPrice();
             }
 
-            txttientong.setText(decimalFormat.format(tongtien)+" VNĐ");
-            btnthanhtoan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    daoHDCT = new DaoHDCT(ThanhToanActivity.this);
-                    for (HDCT hdct: hdctArrayList){
-                        daoHDCT.insert(hdct);
-                        sendNotifiaction(namestore,nameuser,"Xác nhận đơn hàng",user.getUid(),hdct.getIdHDCT());
-                    }
-                    localstorage.deleteCart();
-                    rcvcart.setVisibility(View.GONE);
-                    linearbackground.setBackgroundResource(R.drawable.empty_cart);
-                    scrollView.setVisibility(View.GONE);
-                    linearLayout.setVisibility(View.GONE);
+            binding.txtTienTongThanhToanActivity.setText(NumberFormatHelper.formatNumber(tongtien)+" VNĐ");
+            binding.btnInsertcartThanhToanActivity.setOnClickListener(v -> {
+                HDCT hoadonchitiet = new HDCT(currentDateandTime,thoigian, keyhdct, keyhdct, false,user.getUid(),getCartList());
+                hdctArrayList.add(hoadonchitiet);
+                daoHDCT = new DaoHDCT(ThanhToanActivity.this);
+                for (HDCT hdct: hdctArrayList){
+                    daoHDCT.insert(hdct);
                 }
+                localstorage.deleteCart();
+                updateUIForEmptyCart();
             });
         }else {
-
-            rcvcart.setVisibility(View.GONE);
-            linearbackground.setBackgroundResource(R.drawable.empty_cart);
-            scrollView.setVisibility(View.GONE);
-            linearLayout.setVisibility(View.GONE);
-
+            updateUIForEmptyCart();
         }
 
         daoUser = new DaoUser( ThanhToanActivity.this);
@@ -175,7 +148,7 @@ public class ThanhToanActivity extends AppCompatActivity {
                 for (int i = 0; i < lists.size(); i++) {
                     String userToken = lists.get(i).getToken();
                     if (userToken != null && userToken.matches(user.getUid())) {
-                        txtaddress.setText(lists.get(i).getAddress());
+                        binding.txtaddressThanhToanActivity.setText(lists.get(i).getAddress());
                         break;
                     }
                 }
@@ -186,8 +159,7 @@ public class ThanhToanActivity extends AppCompatActivity {
 
             }
         });
-        toolbar.setNavigationOnClickListener(v -> {
-
+        binding.toolbarThanhToanActivity.setNavigationOnClickListener(v -> {
             startActivity(new Intent(ThanhToanActivity.this, TrangCaNhan.class));
             overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
             finish();
@@ -196,65 +168,18 @@ public class ThanhToanActivity extends AppCompatActivity {
     public ArrayList<Order> getCartList() {
         if (localstorage.getCart() != null) {
             String jsonCart = localstorage.getCart();
-            Type type = new TypeToken<List<Order>>() {
-            }.getType();
+            Type type = new TypeToken<List<Order>>() {}.getType();
             orderArrayList = gson.fromJson(jsonCart, type);
             return orderArrayList;
         }
         return orderArrayList;
     }
-    private void sendNotifiaction(String receiver, final String username, final String message, final String tokensStore, String listhdct){
-        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query = tokens.orderByKey().equalTo(receiver);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Token token = snapshot.getValue(Token.class);
-                    Toast.makeText(ThanhToanActivity.this, "Đã gửi"+receiver, Toast.LENGTH_SHORT).show();
-                    DataHoaDon data = new DataHoaDon(user.getUid(), R.mipmap.ic_launcher_round, username+": "+message, "Đơn Đặt Hàng",
-                            tokensStore,listhdct);
-                    SenderHoaDon sender = new SenderHoaDon(data,token.getToken());
-                    try {
-                        JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj,
-                                new com.android.volley.Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        //response of the request
-                                        Log.d("JSON_RESPONSE", "onResponse: " + response.toString());
 
-                                    }
-                                }, new com.android.volley.Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("JSON_RESPONSE", "onResponse: " + error.toString());
-                            }
-                        }) {
-                            @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
-                                //put params
-                                Map<String, String> headers = new HashMap<>();
-                                headers.put("Content-Type", "application/json");
-                                headers.put("Authorization", "key=AAAA7eCn6jI:APA91bH79oi6N8HNy09qNO5JEFRaYgq5r4bxwRsopAOnVQ8__lbN03pSgCxfD00Y2a8QvubahIhvab_7CLSGVDtPtOee1x0GvcTd9S07uBouSjoBU6kL3_SI1RXr-6ogmBy8sfbQv111");
-                                return headers;
-                            }
-                        };
-
-                        //add this request to queue
-                        requestQueue.add(jsonObjectRequest);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+    // Phương thức để cập nhật giao diện khi giỏ hàng trống
+    private void updateUIForEmptyCart() {
+        binding.rcvcartThanhToanActivity.setVisibility(View.GONE);
+        binding.linearbackgroundThanhToanActivity.setBackgroundResource(R.drawable.empty_cart);
+        binding.scrollViewThanhToanActivity.setVisibility(View.GONE);
+        binding.linear1ThanhToanActivity.setVisibility(View.GONE);
     }
 }

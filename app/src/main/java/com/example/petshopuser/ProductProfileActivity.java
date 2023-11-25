@@ -17,7 +17,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.petshopuser.Helper.NumberFormatHelper;
+import com.example.petshopuser.View.CartActivity;
 import com.example.petshopuser.adapter.FoodProfileAdapter;
+import com.example.petshopuser.adapter.ProductAdapter;
 import com.example.petshopuser.callback.ProductsCallBack;
 import com.example.petshopuser.callback.StoreCallBack;
 import com.example.petshopuser.callback.UserCallBack;
@@ -74,6 +76,7 @@ public class ProductProfileActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         userbase = FirebaseAuth.getInstance().getCurrentUser();
+        foodArrayList = new ArrayList<>();
 
         Intent intent = getIntent();
 
@@ -219,12 +222,7 @@ public class ProductProfileActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnInsertcartProductProfileActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ProductProfileActivity.this, ThanhToanActivity.class));
-            }
-        });
+        binding.btnInsertcartProductProfileActivity.setOnClickListener(v -> startActivity(new Intent(ProductProfileActivity.this, CartActivity.class)));
         binding.toolbarProductProfileActivity.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -375,6 +373,12 @@ public class ProductProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+//        switch (id) {
+//            case R.id.action_detail_favorite:
+//                ProductAdapter productAdapter = new ProductAdapter(foodArrayList, this);
+//                productAdapter.getUserUidFromSharedPreferences();
+//
+//        }
         if (id == R.id.action_detail_chat) {
 //            Intent intent = new Intent(FoodProfileActivity.this, MessegerActivity.class);
 //            intent.putExtra("userId",tokenstore);

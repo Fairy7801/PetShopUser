@@ -17,9 +17,13 @@ import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.petshopuser.Helper.NumberFormatHelper;
 import com.example.petshopuser.ProductProfileActivity;
 import com.example.petshopuser.R;
+import com.example.petshopuser.dao.DaoRecommendProducts;
 import com.example.petshopuser.model.Products;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -32,11 +36,12 @@ public class FoodProfileAdapter extends RecyclerView.Adapter<FoodProfileAdapter.
 
     ArrayList<Products> categoryList;
     Context context;
-    String Tag;
+    FirebaseUser firebaseUser;
 
     public FoodProfileAdapter(ArrayList<Products> categoryList, Context context) {
         this.categoryList = categoryList;
         this.context = context;
+        this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
 
@@ -51,12 +56,10 @@ public class FoodProfileAdapter extends RecyclerView.Adapter<FoodProfileAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-        decimalFormat.applyPattern("#,###,###,###");
         Products categories = categoryList.get(position);
         holder.title.setText(categories.getNameP());
         holder.txtdiachi.setText(categories.getAddress());
-        holder.txtgia.setText(String.valueOf(decimalFormat.format(categories.getPrice())+" VNĐ"));
+        holder.txtgia.setText(String.valueOf(NumberFormatHelper.formatNumber(categories.getPrice())+" VNĐ"));
         Picasso.get()
                 .load(categories.getImage())
                 .into(holder.imageView, new Callback() {
@@ -72,21 +75,22 @@ public class FoodProfileAdapter extends RecyclerView.Adapter<FoodProfileAdapter.
                 });
 
 
-        holder.cardView1.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ProductProfileActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("idfood",categories.getIdP());
-                intent.putExtra("matl",categories.getId());
-                intent.putExtra("tokenstore",categories.getTokenStore());
-                context.startActivity(intent);
+        holder.cardView1.setOnClickListener(v -> {
+            recommendCategories(categories.getId());
+            Intent intent = new Intent(context, ProductProfileActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("idfood",categories.getIdP());
+            intent.putExtra("matl",categories.getId());
+            intent.putExtra("tokenstore",categories.getTokenStore());
+            context.startActivity(intent);
 
-            }
         });
 
+    }
+
+    public void recommendCategories(String idCategory) {
+        DaoRecommendProducts daoRecommendProducts = new DaoRecommendProducts(context);
+        daoRecommendProducts.saveSearchHistory(firebaseUser.getUid(),idCategory);
     }
 
     @Override

@@ -12,8 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.petshopuser.R;
+import com.example.petshopuser.ThanhToanActivity;
 import com.example.petshopuser.View.User.TrangCaNhan;
 import com.example.petshopuser.adapter.CartAdapter;
+import com.example.petshopuser.databinding.ActivityCartBinding;
 import com.example.petshopuser.local.LocalStorage;
 import com.example.petshopuser.model.HDCT;
 import com.example.petshopuser.model.Order;
@@ -28,50 +30,39 @@ import java.util.List;
 import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity {
-
-    RecyclerView rcvcart;
-    CartAdapter cartAdapter =null;
-    ArrayList<HDCT> hdctArrayList;
-    LocalStorage localStorage;
-    Gson gson;
-    ImageView back;
-    RelativeLayout linearbackground;
-    ArrayList<Order> orderArrayList;
+    private ActivityCartBinding binding;
+    private CartAdapter cartAdapter =null;
+    private ArrayList<HDCT> hdctArrayList;
+    private LocalStorage localStorage;
+    private Gson gson;
+    private ArrayList<Order> orderArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cart);
+        binding = ActivityCartBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        back = findViewById(R.id.back);
-        rcvcart = findViewById(R.id.rcvcart);
         localStorage = new LocalStorage(getApplicationContext());
 
-        linearbackground = findViewById(R.id.linearbackground);
-
-        final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-        decimalFormat.applyPattern("#,###,###,###");
         gson = new Gson();
         hdctArrayList = new ArrayList<>();
         orderArrayList = new ArrayList<>();
         orderArrayList = getCartList();
         if (orderArrayList.size() != 0) {
-            cartAdapter = new CartAdapter(orderArrayList, getApplicationContext());
+            cartAdapter = new CartAdapter(orderArrayList, getApplicationContext(), true);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-            rcvcart.setLayoutManager(linearLayoutManager);
-            rcvcart.setAdapter(cartAdapter);
+            binding.rcvcartCartActivity.setLayoutManager(linearLayoutManager);
+            binding.rcvcartCartActivity.setAdapter(cartAdapter);
 
         }else {
-            linearbackground.setBackgroundResource(R.drawable.empty_cart);
+            binding.linearbackgroundCartActivity.setBackgroundResource(R.drawable.empty_cart);
         }
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), TrangCaNhan.class);
-                startActivity(i);
-            }
+        binding.backCartActivity.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), TrangCaNhan.class));
         });
+        binding.btnDatHangCartActivity.setOnClickListener(v -> startActivity(new Intent(CartActivity.this, ThanhToanActivity.class)));
 
     }
     public ArrayList<Order> getCartList () {

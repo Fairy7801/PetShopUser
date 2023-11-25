@@ -14,7 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.petshopuser.Helper.NumberFormatHelper;
 import com.example.petshopuser.R;
+import com.example.petshopuser.databinding.RowCartBinding;
 import com.example.petshopuser.local.LocalStorage;
 import com.example.petshopuser.model.Order;
 import com.google.gson.Gson;
@@ -30,51 +32,44 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
 
     ArrayList<Order> cartList;
     Context context;
-
-    String _subtotal, _price, _quantity;
+    String _subtotal;
     LocalStorage localStorage;
     Gson gson;
+    private boolean showDeleteButton;
 
-    public CartAdapter(ArrayList<Order> cartList, Context context) {
+    public CartAdapter(ArrayList<Order> cartList, Context context, boolean showDeleteButton) {
         this.cartList = cartList;
         this.context = context;
+        this.showDeleteButton = showDeleteButton;
     }
 
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View itemView;
-
-        itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.row_cart, parent, false);
-
-
-        return new MyViewHolder(itemView);
+        RowCartBinding binding = RowCartBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new MyViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getInstance(Locale.US);
-        decimalFormat.applyPattern("#,###,###,###");
         final Order cart = cartList.get(position);
         localStorage = new LocalStorage(context);
         gson = new Gson();
-        holder.title.setText(cart.getProducts().getNameP());
-        holder.attribute.setText(cart.getProducts().getId());
+        holder.binding.productTitleRowCard.setText(cart.getProducts().getNameP());
+        holder.binding.productAttributeRowCard.setText(cart.getProducts().getId());
+        holder.binding.quantityRowCard.setText(NumberFormatHelper.formatNumber(cart.getSoLuong()));
+        holder.binding.productPriceRowCard.setText(NumberFormatHelper.formatNumber(cart.getProducts().getPrice()));
 
-        holder.quantity.setText(String.valueOf(decimalFormat.format(cart.getSoLuong())));
-        holder.price.setText(String.valueOf(decimalFormat.format(cart.getProducts().getPrice())));
+        _subtotal = NumberFormatHelper.formatNumber(cart.getSoLuong() * cart.getProducts().getPrice());
 
-        _subtotal = String.valueOf(decimalFormat.format(cart.getSoLuong() * cart.getProducts().getPrice()));
-
-        holder.subTotal.setText(_subtotal);
+        holder.binding.subTotalRowCard.setText(_subtotal);
         Picasso.get()
                 .load(cart.getProducts().getImage())
-                .into(holder.imageView, new Callback() {
+                .into(holder.binding.productImageRowCard, new Callback() {
                     @Override
                     public void onSuccess() {
-                        holder.progressBar.setVisibility(View.GONE);
+                        holder.binding.progressbarRowCard.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -83,18 +78,20 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
                     }
                 });
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (showDeleteButton) {
+            holder.binding.cartDeleteRowCard.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.cartDeleteRowCard.setVisibility(View.GONE);
+        }
 
-                cartList.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, cartList.size());
-                Gson gson = new Gson();
-                String cartStr = gson.toJson(cartList);
-                Log.d("CART", cartStr);
-                localStorage.setCart(cartStr);
-            }
+        holder.binding.cartDeleteRowCard.setOnClickListener(v -> {
+            cartList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, cartList.size());
+            notifyDataSetChanged();
+            Gson gson = new Gson();
+            String cartStr = gson.toJson(cartList);
+            localStorage.setCart(cartStr);
         });
     }
 
@@ -104,27 +101,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyViewHolder> 
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        TextView title;
-        ProgressBar progressBar;
-        CardView cardView;
-        TextView offer, currency, price, quantity, attribute, addToCart, subTotal;
-        TextView plus, minus;
-        Button delete;
+        private final RowCartBinding binding;
 
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            imageView = itemView.findViewById(R.id.product_image);
-            title = itemView.findViewById(R.id.product_title);
-            progressBar = itemView.findViewById(R.id.progressbar);
-            quantity = itemView.findViewById(R.id.quantity);
-            currency = itemView.findViewById(R.id.product_currency);
-            attribute = itemView.findViewById(R.id.product_attribute);
-            minus = itemView.findViewById(R.id.quantity_minus);
-            delete = itemView.findViewById(R.id.cart_delete);
-            subTotal = itemView.findViewById(R.id.sub_total);
-            price = itemView.findViewById(R.id.product_price);
+        public MyViewHolder(@NonNull RowCartBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 }
