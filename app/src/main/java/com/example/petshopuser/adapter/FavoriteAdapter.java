@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petshopuser.Helper.NumberFormatHelper;
 import com.example.petshopuser.ProductProfileActivity;
+import com.example.petshopuser.dao.DaoRecommendProducts;
 import com.example.petshopuser.databinding.RowCategoryBinding;
 import com.example.petshopuser.model.Products;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -23,10 +26,12 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
 
     ArrayList<Products> categoryList;
     Context context;
+    FirebaseUser firebaseUser;
 
     public FavoriteAdapter(ArrayList<Products> categoryList, Context context) {
         this.categoryList = categoryList;
         this.context = context;
+        this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +71,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
 
 
         holder.binding.cardViewRowCategory.setOnClickListener(view -> {
+            recommendCategories(categories.getId());
             Intent intent = new Intent(context, ProductProfileActivity.class);
             intent.putExtra("idfood",categories.getIdP());
             intent.putExtra("matl",categories.getId());
@@ -75,6 +81,11 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.MyView
             context.startActivity(intent);
         });
 
+    }
+
+    public void recommendCategories(String idCategory) {
+        DaoRecommendProducts daoRecommendProducts = new DaoRecommendProducts(context);
+        daoRecommendProducts.saveSearchHistory(firebaseUser.getUid(),idCategory);
     }
 
     @Override

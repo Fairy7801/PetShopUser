@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +23,7 @@ import com.example.petshopuser.callback.ProductsCallBack;
 import com.example.petshopuser.callback.UserCallBack;
 import com.example.petshopuser.dao.DaoCategories;
 import com.example.petshopuser.dao.DaoProducts;
+import com.example.petshopuser.dao.DaoRecommendProducts;
 import com.example.petshopuser.dao.DaoUser;
 import com.example.petshopuser.databinding.ActivityMainBinding;
 import com.example.petshopuser.model.Categories;
@@ -29,13 +32,20 @@ import com.example.petshopuser.model.Products;
 import com.example.petshopuser.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private AdapterViewPayer adapterViewPayer;
@@ -81,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
         binding.edtSearchActivityMain.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, SearchActivity.class));
         });
+
+        fetchSearchHistoryAndRecommendProducts();
 
         setContentView(view);
     }
@@ -209,5 +221,113 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        fetchSearchHistoryAndRecommendProducts();
     }
+
+    public void fetchSearchHistoryAndRecommendProducts() {
+        DaoRecommendProducts daoRecommendProducts = new DaoRecommendProducts(this);
+        DatabaseReference searchHistoryRef = daoRecommendProducts.getSearchHistoryRef(firebaseUser.getUid());
+
+        searchHistoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Nếu có dữ liệu lịch sử tìm kiếm
+
+                    // Tạo một danh sách để lưu trữ thông tin về số lần tìm kiếm cho từng danh mục
+                    Map<String, Long> categorySearchCountMap = new HashMap<>();
+
+                    // Duyệt qua danh sách tìm kiếm và lưu vào map
+                    for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                        String categoryId = categorySnapshot.getKey();
+                        long searchCount = (long) categorySnapshot.getValue();
+                        categorySearchCountMap.put(categoryId, searchCount);
+                    }
+
+                    // Xử lý logic để quyết định danh sách sản phẩm cần hiển thị
+                    List<String> recommendedProducts = determineRecommendedProducts(categorySearchCountMap);
+                    Log.d("thien", "onDataChange: " + recommendedProducts.get(0));
+
+                    // Sử dụng danh sách recommendedProducts để hiển thị sản phẩm
+                    updateRecyclerViewProducts(recommendedProducts);
+
+                } else {
+                    updateRecyclerViewProductsNewUser();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Xử lý lỗi nếu cần
+            }
+        });
+    }
+
+    // Hàm xử lý logic để quyết định danh sách sản phẩm cần hiển thị
+    private List<String> determineRecommendedProducts(Map<String, Long> categorySearchCountMap) {
+        List<String> recommendedProducts = new ArrayList<>();
+
+        // Nếu người dùng tìm kiếm ít nhất một danh mục
+        if (!categorySearchCountMap.isEmpty()) {
+            // Tìm số lần tìm kiếm cao nhất
+            long maxSearchCount = Collections.max(categorySearchCountMap.values());
+
+            // Tìm danh mục có số lần tìm kiếm cao nhất
+            List<String> mostSearchedCategories = new ArrayList<>();
+            for (Map.Entry<String, Long> entry : categorySearchCountMap.entrySet()) {
+                if (entry.getValue() == maxSearchCount) {
+                    // Nếu số lần tìm kiếm bằng với số lần tìm kiếm cao nhất
+                    mostSearchedCategories.add(entry.getKey());
+                }
+            }
+
+            if (maxSearchCount > 3) {
+                // Nếu số lần tìm kiếm cao nhất lớn hơn 3, thêm tất cả danh mục có số lần tìm kiếm cao nhất
+                recommendedProducts.addAll(mostSearchedCategories);
+            }
+        }
+
+        return recommendedProducts;
+    }
+
+    private void updateRecyclerViewProducts(List<String> recommendedProducts) {
+        daoProducts.getAll(new ProductsCallBack() {
+            @Override
+            public void onSuccess(ArrayList<Products> lists) {
+                productsArrayList.clear();
+                for (Products products : lists) {
+                    for (String recommendedProductId : recommendedProducts) {
+                        if (products.getId().equals(recommendedProductId)) {
+                            productsArrayList.add(products);
+                        }
+                    }
+                }
+                productAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String message) {
+                // Xử lý lỗi nếu cần
+            }
+        });
+    }
+
+
+    public void updateRecyclerViewProductsNewUser() {
+        daoProducts = new DaoProducts(MainActivity.this);
+        daoProducts.getAll(new ProductsCallBack() {
+            @Override
+            public void onSuccess(ArrayList<Products> lists) {
+                productsArrayList.clear();
+                productsArrayList.addAll(lists);
+                productAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
+    }
+
 }

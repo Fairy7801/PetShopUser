@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.petshopuser.ProductProfileActivity;
 import com.example.petshopuser.Helper.NumberFormatHelper;
 import com.example.petshopuser.R;
+import com.example.petshopuser.dao.DaoRecommendProducts;
 import com.example.petshopuser.databinding.ItemfoodBinding;
 import com.example.petshopuser.model.Favorite;
 import com.example.petshopuser.model.Products;
@@ -45,7 +46,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     }
 
     // Hàm để lấy userUid từ SharedPreferences
-    private String getUserUidFromSharedPreferences() {
+    public String getUserUidFromSharedPreferences() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE);
         return sharedPreferences.getString("user_uid", "");
     }
@@ -108,7 +109,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 });
 
         // Kiểm tra và hiển thị trạng thái yêu thích
-        favouriteChecker(categories.getId(), holder);
+        favouriteChecker(categories.getIdP(), holder);
     }
 
     // Xử lý sự kiện khi nhấn nút like
@@ -133,6 +134,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
     // Xử lý sự kiện khi nhấn vào cardview sản phẩm
     private void navigateToProductDetail(Products categories) {
+        recommendCategories(categories.getId());
         Intent i = new Intent(context, ProductProfileActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -143,6 +145,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         i.putExtra("tokenstore", categories.getTokenStore());
 
         context.startActivity(i);
+    }
+
+    public void recommendCategories(String idCategory) {
+        DaoRecommendProducts daoRecommendProducts = new DaoRecommendProducts(context);
+        daoRecommendProducts.saveSearchHistory(userUid,idCategory);
     }
 
     // Kiểm tra và hiển thị trạng thái yêu thích
@@ -166,16 +173,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
     // Xử lý thêm hoặc xoá sản phẩm khỏi danh sách yêu thích
     private void processLikeButtonAction(DataSnapshot snapshot, Products categories) {
-        if (snapshot.child(categories.getId()).hasChild(userUid)) {
-            fvrtref.child(categories.getId()).child(userUid).removeValue();
-            fvrt_listRef.child(categories.getId()).removeValue();
+        if (snapshot.child(categories.getIdP()).hasChild(userUid)) {
+            fvrtref.child(categories.getIdP()).child(userUid).removeValue();
+            fvrt_listRef.child(categories.getIdP()).removeValue();
             Toast.makeText(context, "Xoá Khỏi Danh Sách Yêu Thích", Toast.LENGTH_SHORT).show();
             mProcessLike = false;
         } else {
-            fvrtref.child(categories.getId()).child(userUid).setValue(true);
+            fvrtref.child(categories.getIdP()).child(userUid).setValue(true);
             Favorite favorite = new Favorite(fvrt_listRef.push().getKey(), userUid, categories, true);
 
-            fvrt_listRef.child(categories.getId()).setValue(favorite);
+            fvrt_listRef.child(categories.getIdP()).setValue(favorite);
             mProcessLike = false;
 
             Toast.makeText(context, "Thêm Vào Danh Sách Yêu Thích", Toast.LENGTH_SHORT).show();

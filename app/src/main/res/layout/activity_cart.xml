@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearbackground"
+    android:id="@+id/linearbackground_cart_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".View.CartActivity">
@@ -23,7 +23,7 @@
             />
 
         <ImageView
-            android:id="@+id/back"
+            android:id="@+id/back_cart_activity"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
@@ -32,9 +32,20 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvcart"
+        android:id="@+id/rcvcart_cart_activity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:layout_marginTop="14dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đặt Hàng"
+        android:background="@drawable/boggocbutton"
+        android:layout_below="@+id/rcvcart_cart_activity"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:id="@+id/btn_dat_hang_cart_activity" />
 </RelativeLayout>

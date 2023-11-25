@@ -2,20 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearbackground"
+    android:id="@+id/linearbackground_thanh_toan_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ThanhToanActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbar_thanh_toan_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:elevation="10dp">
 
         <TextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/toolbar_title_thanh_toan_activity"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,11 +23,11 @@
             android:layout_marginTop="5dp" />
     </androidx.appcompat.widget.Toolbar>
     <ScrollView
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/toolbar_thanh_toan_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/scrollView"
+        android:id="@+id/scrollView_thanh_toan_activity"
         android:layout_above="@id/card_view"
         >
         <LinearLayout
@@ -67,7 +67,7 @@
                     android:text="Địa Chỉ" />
 
                 <TextView
-                    android:id="@+id/txtaddress"
+                    android:id="@+id/txtaddress_thanh_toan_activity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="150dp"
@@ -98,7 +98,7 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcvcart"
+                android:id="@+id/rcvcart_thanh_toan_activity"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
                 />
@@ -150,7 +150,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:id="@+id/linear1"
+            android:id="@+id/linear1_thanh_toan_activity"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -167,7 +167,7 @@
                     android:layout_weight="1"
                     />
                 <TextView
-                    android:id="@+id/txttientong"
+                    android:id="@+id/txt_tien_tong_thanh_toan_activity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="54,000VNĐ"
@@ -180,7 +180,7 @@
 
 
             <Button
-                android:id="@+id/btn_insertcart"
+                android:id="@+id/btn_insertcart_thanh_toan_activity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
