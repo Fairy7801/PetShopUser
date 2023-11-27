@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
 
         sharedPreferences = getSharedPreferences("toado", Context.MODE_PRIVATE);
-        binding.txtDiachiActivityMain.setText(sharedPreferences.getString("diaChi"," "));
+        binding.txtDiachiActivityMain.setText(sharedPreferences.getString("diaChi", " "));
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser != null) {
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Lấy ảnh từ firebase realtime và hiển thị
-    private void loadImageFromDatabase() {
+    void loadImageFromDatabase() {
         daoUser = new DaoUser(MainActivity.this);
         daoUser.getAll(new UserCallBack() {
             @Override
@@ -185,20 +185,7 @@ public class MainActivity extends AppCompatActivity {
         binding.rcvMonanActivityMain.setLayoutManager(gridLayoutManager);
         binding.rcvMonanActivityMain.setHasFixedSize(true);
         binding.rcvMonanActivityMain.setAdapter(productAdapter);
-
-        daoProducts.getAll(new ProductsCallBack() {
-            @Override
-            public void onSuccess(ArrayList<Products> lists) {
-                productsArrayList.clear();
-                productsArrayList.addAll(lists);
-                productAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(String message) {
-                // Xử lý lỗi nếu cần
-            }
-        });
+        updateRecyclerViewProductsNewUser();
     }
 
     public void renewItems() {
@@ -218,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
         }
         adapterViewPayer.ViewPagerAdapter(sliderItemList);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -231,8 +219,9 @@ public class MainActivity extends AppCompatActivity {
         searchHistoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                // Nếu có dữ liệu lịch sử tìm kiếm
                 if (snapshot.exists()) {
-                    // Nếu có dữ liệu lịch sử tìm kiếm
 
                     // Tạo một danh sách để lưu trữ thông tin về số lần tìm kiếm cho từng danh mục
                     Map<String, Long> categorySearchCountMap = new HashMap<>();
@@ -246,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
 
                     // Xử lý logic để quyết định danh sách sản phẩm cần hiển thị
                     List<String> recommendedProducts = determineRecommendedProducts(categorySearchCountMap);
-                    Log.d("thien", "onDataChange: " + recommendedProducts.get(0));
 
                     // Sử dụng danh sách recommendedProducts để hiển thị sản phẩm
                     updateRecyclerViewProducts(recommendedProducts);
@@ -281,12 +269,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if (maxSearchCount > 3) {
+            if (maxSearchCount >= 1) {
                 // Nếu số lần tìm kiếm cao nhất lớn hơn 3, thêm tất cả danh mục có số lần tìm kiếm cao nhất
                 recommendedProducts.addAll(mostSearchedCategories);
             }
         }
-
         return recommendedProducts;
     }
 
@@ -304,14 +291,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 productAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onError(String message) {
                 // Xử lý lỗi nếu cần
             }
         });
     }
-
 
     public void updateRecyclerViewProductsNewUser() {
         daoProducts = new DaoProducts(MainActivity.this);
@@ -329,5 +314,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }

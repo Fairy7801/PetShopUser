@@ -32,7 +32,6 @@ import java.util.Locale;
 public class CartActivity extends AppCompatActivity {
     private ActivityCartBinding binding;
     private CartAdapter cartAdapter =null;
-    private ArrayList<HDCT> hdctArrayList;
     private LocalStorage localStorage;
     private Gson gson;
     private ArrayList<Order> orderArrayList;
@@ -44,9 +43,9 @@ public class CartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         localStorage = new LocalStorage(getApplicationContext());
+        binding.btnDatHangCartActivity.setVisibility(View.GONE);
 
         gson = new Gson();
-        hdctArrayList = new ArrayList<>();
         orderArrayList = new ArrayList<>();
         orderArrayList = getCartList();
         if (orderArrayList.size() != 0) {
@@ -54,7 +53,7 @@ public class CartActivity extends AppCompatActivity {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
             binding.rcvcartCartActivity.setLayoutManager(linearLayoutManager);
             binding.rcvcartCartActivity.setAdapter(cartAdapter);
-
+            binding.btnDatHangCartActivity.setVisibility(View.VISIBLE);
         }else {
             binding.linearbackgroundCartActivity.setBackgroundResource(R.drawable.empty_cart);
         }

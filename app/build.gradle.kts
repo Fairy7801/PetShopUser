@@ -101,4 +101,11 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
 
+    // Kiểm tra độ bao phủ của code
+    debugImplementation ("com.vanniktech:gradle-android-junit-jacoco-plugin:0.16.0")
+    testImplementation ("org.mockito:mockito-core:3.10.0")
+
+    // ViewModel and LiveData
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
 }
