@@ -1,8 +1,5 @@
 package com.example.petshopuser;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +10,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.petshopuser.Helper.ValidationHelper;
+import com.example.petshopuser.databinding.ActivityDangKyWithPhoneBinding;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -20,58 +22,41 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import java.util.concurrent.TimeUnit;
 
 public class DangKyWithPhone extends AppCompatActivity {
-    EditText edtPhone;
-    Button btnOTP;
-    TextView gotoDangNhap;
-    ProgressBar progressBar;
+    private ActivityDangKyWithPhoneBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dang_ky_with_phone);
-
-        edtPhone = findViewById(R.id.edtPhone);
-        btnOTP = findViewById(R.id.btnOTP);
-        gotoDangNhap = findViewById(R.id.gotoDangNhap);
-        progressBar = findViewById(R.id.progressBar);
-
-        gotoDangNhap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DangKyWithPhone.this,DangNhapActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
-        btnOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String phone = edtPhone.getText().toString().trim();
-                if (TextUtils.isEmpty(phone)){
-                    edtPhone.setError("Bắt buộc");
-                    return;
-                }
+        binding = ActivityDangKyWithPhoneBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        binding.gotoDangNhapDangKyWithPhone.setOnClickListener(v -> startActivity(new Intent(DangKyWithPhone.this, DangNhapActivity.class)));
+        binding.btnOTPDangKyWithPhone.setOnClickListener(v -> {
+            final String phone = binding.edtPhone.getText().toString().trim();
+            if (!validatePhone(phone)) {
+                binding.progressBarDangKyWithPhone.setVisibility(View.VISIBLE);
+                binding.btnOTPDangKyWithPhone.setVisibility(View.INVISIBLE);
                 sendVerificationCode(phone);
-                progressBar.setVisibility(View.VISIBLE);
-                btnOTP.setVisibility(View.INVISIBLE);
-//                Intent intent = new Intent(getApplicationContext(),verifyPhone.class);
-//                intent.putExtra("phone",edtPhone.getText().toString());
-//                startActivity(intent);
             }
         });
     }
 
-    public void sendVerificationCode(String phone) {
-
+    private boolean validatePhone(String phone) {
         if (phone.isEmpty()) {
-            edtPhone.setError("Phone number is required");
-            edtPhone.requestFocus();
+            binding.edtPhone.setError("Phone number is required");
+            binding.edtPhone.requestFocus();
+            return true;
         }
         if (phone.length() > 10 || phone.length() < 9) {
-            edtPhone.setError("please enter a valid phone");
-            edtPhone.requestFocus();
-            return;
+            binding.edtPhone.setError("please enter a valid phone");
+            binding.edtPhone.requestFocus();
+            return true;
         }
+        return false;
+    }
+
+    public void sendVerificationCode(String phone) {
+        binding.progressBarDangKyWithPhone.setVisibility(View.GONE);
+        binding.btnOTPDangKyWithPhone.setVisibility(View.VISIBLE);
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 "+84" + phone,
                 60L,
@@ -80,26 +65,20 @@ public class DangKyWithPhone extends AppCompatActivity {
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                        progressBar.setVisibility(View.GONE);
-                        btnOTP.setVisibility(View.VISIBLE);
-                        Toast.makeText(DangKyWithPhone.this, "Happy new year-COMPLETED", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DangKyWithPhone.this, "Đăng ký thành công với số điện thoại: " + "+84" + phone, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        progressBar.setVisibility(View.GONE);
-                        btnOTP.setVisibility(View.VISIBLE);
                         Toast.makeText(DangKyWithPhone.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onCodeSent(@NonNull String verificationID, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(verificationID, forceResendingToken);
-                        progressBar.setVisibility(View.GONE);
-                        btnOTP.setVisibility(View.VISIBLE);
-                        Toast.makeText(DangKyWithPhone.this, "Happy new year-CODESENT", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DangKyWithPhone.this, "Mã code đã được gửi đến số điện thoại: " + "0" + phone, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), verifyPhone.class);
-                        intent.putExtra("mobile", edtPhone.getText().toString());
+                        intent.putExtra("mobile", binding.edtPhone.getText().toString());
                         intent.putExtra("verificationID", verificationID);
                         startActivity(intent);
                     }
